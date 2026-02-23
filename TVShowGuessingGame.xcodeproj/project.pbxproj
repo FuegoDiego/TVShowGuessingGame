@@ -6,13 +6,35 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B0ADFEFE2F4C9AD900DF8B8D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0ADFEFD2F4C9AD800DF8B8D /* GoogleService-Info.plist */; };
+		B0ADFF012F4C9BA700DF8B8D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B0ADFF002F4C9BA700DF8B8D /* FirebaseAuth */; };
+		B0ADFF032F4C9BA700DF8B8D /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0ADFF022F4C9BA700DF8B8D /* FirebaseCore */; };
+		B0ADFF052F4C9BA700DF8B8D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = B0ADFF042F4C9BA700DF8B8D /* FirebaseDatabase */; };
+		B0ADFF072F4C9BA700DF8B8D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B0ADFF062F4C9BA700DF8B8D /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B08FD54A2F489CEB00A9EC1B /* TVShowGuessingGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TVShowGuessingGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0ADFEFD2F4C9AD800DF8B8D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B0ADFF1B2F4C9D9900DF8B8D /* Exceptions for "TVShowGuessingGame" folder in "TVShowGuessingGame" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B08FD5492F489CEB00A9EC1B /* TVShowGuessingGame */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B08FD54C2F489CEB00A9EC1B /* TVShowGuessingGame */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B0ADFF1B2F4C9D9900DF8B8D /* Exceptions for "TVShowGuessingGame" folder in "TVShowGuessingGame" target */,
+			);
 			path = TVShowGuessingGame;
 			sourceTree = "<group>";
 		};
@@ -23,6 +45,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0ADFF052F4C9BA700DF8B8D /* FirebaseDatabase in Frameworks */,
+				B0ADFF072F4C9BA700DF8B8D /* FirebaseFirestore in Frameworks */,
+				B0ADFF032F4C9BA700DF8B8D /* FirebaseCore in Frameworks */,
+				B0ADFF012F4C9BA700DF8B8D /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34,6 +60,7 @@
 			children = (
 				B08FD54C2F489CEB00A9EC1B /* TVShowGuessingGame */,
 				B08FD54B2F489CEB00A9EC1B /* Products */,
+				B0ADFEFD2F4C9AD800DF8B8D /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +92,10 @@
 			);
 			name = TVShowGuessingGame;
 			packageProductDependencies = (
+				B0ADFF002F4C9BA700DF8B8D /* FirebaseAuth */,
+				B0ADFF022F4C9BA700DF8B8D /* FirebaseCore */,
+				B0ADFF042F4C9BA700DF8B8D /* FirebaseDatabase */,
+				B0ADFF062F4C9BA700DF8B8D /* FirebaseFirestore */,
 			);
 			productName = TVShowGuessingGame;
 			productReference = B08FD54A2F489CEB00A9EC1B /* TVShowGuessingGame.app */;
@@ -94,6 +125,9 @@
 			);
 			mainGroup = B08FD5412F489CEB00A9EC1B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B0ADFEFF2F4C9BA700DF8B8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B08FD54B2F489CEB00A9EC1B /* Products */;
 			projectDirPath = "";
@@ -109,6 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0ADFEFE2F4C9AD900DF8B8D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,11 +291,13 @@
 				DEVELOPMENT_TEAM = 673QYCH5FN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TVShowGuessingGame/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -288,11 +325,13 @@
 				DEVELOPMENT_TEAM = 673QYCH5FN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TVShowGuessingGame/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,6 +371,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B0ADFEFF2F4C9BA700DF8B8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B0ADFF002F4C9BA700DF8B8D /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0ADFEFF2F4C9BA700DF8B8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		B0ADFF022F4C9BA700DF8B8D /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0ADFEFF2F4C9BA700DF8B8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		B0ADFF042F4C9BA700DF8B8D /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0ADFEFF2F4C9BA700DF8B8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		B0ADFF062F4C9BA700DF8B8D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0ADFEFF2F4C9BA700DF8B8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B08FD5422F489CEB00A9EC1B /* Project object */;
 }
