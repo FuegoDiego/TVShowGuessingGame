@@ -22,6 +22,10 @@ struct ContentView: View {
             NavigationLink("Play"){
                 GameView()
             }
+            Spacer()
+            NavigationLink("Leaderboard"){
+                LeaderboardView()
+            }
             
         }
         .padding()
