@@ -16,22 +16,25 @@ struct ContentView: View {
                 
                 Text("TV Show Guessing Game")
                 .font(.title)
+                .foregroundStyle(.white)
                 ZStack{
                     Capsule()
-                        .stroke()
+                        .stroke(.white)
                         .frame(width: 200 ,height: 30)
                     TextField("Username", text: $name)
                         .multilineTextAlignment(.center)
+                        .foregroundStyle(.white)
                 }
             Spacer()
             .frame(width: 1, height: 15)
                 
                 ZStack{
                     Capsule()
-                        .stroke()
+                        .stroke(.white)
                         .frame(width: 200 ,height: 30)
                     TextField("Password", text: $password)
                         .multilineTextAlignment(.center)
+                        .foregroundStyle(.white)
                 }
             Spacer()
             .frame(width: 1, height: 30)
@@ -63,6 +66,8 @@ struct ContentView: View {
            
         }
             .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.black)
     }
 }
 
