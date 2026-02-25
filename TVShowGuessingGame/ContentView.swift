@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    
     @State var name = ""
     @State var password = ""
+    
     var body: some View {
         VStack{
             
