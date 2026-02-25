@@ -13,20 +13,58 @@ struct ContentView: View {
     @State var password = ""
     
     var body: some View {
-        NavigationView {
+        VStack{
             
-            Text("TV Show Guessing Game")
-            
-            TextField("Username", text: $name)
-            
-            TextField("Password", text: $password)
-            
-            NavigationLink("Play"){
-                GameView()
+                
+                Text("TV Show Guessing Game")
+                .font(.title)
+                ZStack{
+                    Capsule()
+                        .stroke()
+                        .frame(width: 200 ,height: 30)
+                    TextField("Username", text: $name)
+                        .multilineTextAlignment(.center)
+                }
+            Spacer()
+            .frame(width: 1, height: 15)
+                
+                ZStack{
+                    Capsule()
+                        .stroke()
+                        .frame(width: 200 ,height: 30)
+                    TextField("Password", text: $password)
+                        .multilineTextAlignment(.center)
+                }
+            Spacer()
+            .frame(width: 1, height: 30)
+            ZStack{
+                Capsule()
+                    .fill(.blue)
+                    .frame(width: 100 ,height: 30)
+                NavigationLink("Play"){
+                    GameView()
+                }
+                .foregroundStyle(.white)
+            }
+                Spacer()
+                .frame(width: 1, height: 15)
+            ZStack{
+                Capsule()
+                    .fill(.blue)
+                    .frame(width: 150 ,height: 30)
+                    
+                NavigationLink("Leaderboard"){
+                    LeaderboardView()
+                }
+                .foregroundStyle(.white)
+            }
+            NavigationLink("Leaderboard"){
+                LeaderboardView()
             }
             
+           
         }
-        .padding()
+            .padding()
     }
 }
 
