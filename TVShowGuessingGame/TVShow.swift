@@ -9,12 +9,12 @@ import Foundation
 
 struct TVShow {
     var title : String
-    var year : Int
+    var year : String
     var genres : [String]
     var image : String
     var id : Int
     
-    init(title: String, year: Int, genres: [String], image: String, id: Int) {
+    init(title: String, year: String, genres: [String], image: String, id: Int) {
         self.title = title
         self.year = year
         self.genres = genres
@@ -24,7 +24,7 @@ struct TVShow {
     
     init(id: Int) {
         self.title = ""
-        self.year = 0
+        self.year = ""
         self.genres = []
         self.image = ""
         self.id = id

@@ -13,11 +13,10 @@ struct ContentView: View {
     @State var password = ""
     
     var body: some View {
-        VStack{
-            
-                
+        NavigationStack {
+            VStack{
                 Text("TV Show Guessing Game")
-                .font(.title)
+                    .font(.title)
                 ZStack{
                     Capsule()
                         .stroke()
@@ -25,8 +24,8 @@ struct ContentView: View {
                     TextField("Username", text: $name)
                         .multilineTextAlignment(.center)
                 }
-            Spacer()
-            .frame(width: 1, height: 15)
+                Spacer()
+                    .frame(width: 1, height: 15)
                 
                 ZStack{
                     Capsule()
@@ -35,36 +34,37 @@ struct ContentView: View {
                     TextField("Password", text: $password)
                         .multilineTextAlignment(.center)
                 }
-            Spacer()
-            .frame(width: 1, height: 30)
-            ZStack{
-                Capsule()
-                    .fill(.blue)
-                    .frame(width: 100 ,height: 30)
-                NavigationLink("Play"){
-                    GameView()
-                }
-                .foregroundStyle(.white)
-            }
                 Spacer()
-                .frame(width: 1, height: 15)
-            ZStack{
-                Capsule()
-                    .fill(.blue)
-                    .frame(width: 150 ,height: 30)
-                    
-                NavigationLink("Leaderboard"){
-                    LeaderboardView()
+                    .frame(width: 1, height: 30)
+                ZStack{
+                    Capsule()
+                        .fill(.blue)
+                        .frame(width: 100 ,height: 30)
+                    NavigationLink("Play"){
+                        GameView()
+                    }
+                    .foregroundStyle(.white)
                 }
-                .foregroundStyle(.white)
+                Spacer()
+                    .frame(width: 1, height: 15)
+                ZStack{
+                    Capsule()
+                        .fill(.blue)
+                        .frame(width: 150 ,height: 30)
+                    
+                    NavigationLink("Leaderboard"){
+                        LeaderboardView()
+                    }
+                    .foregroundStyle(.white)
+                }
+                
+                
+                
+                
+                
             }
-            NavigationLink("Leaderboard"){
-                LeaderboardView()
-            }
-            
-           
-        }
             .padding()
+        }
     }
 }
 
