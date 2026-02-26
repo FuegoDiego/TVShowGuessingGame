@@ -42,19 +42,7 @@ struct ContentView: View {
             Spacer()
             .frame(width: 1, height: 30)
             
-                ZStack{
-                                Capsule()
-                                    .fill(.blue)
-                                    .frame(width: 100 ,height: 30)
-                                NavigationLink("Play"){
-                                    GameView()
-                                }
-                                .foregroundStyle(.white)
-                                .padding(100)
-                                .contentShape(Capsule())
-                            }
-                                Spacer()
-                                .frame(width: 1, height: 15)
+                
                 ZStack{
                     Capsule()
                         .fill(.blue)
