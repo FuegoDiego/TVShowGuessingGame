@@ -15,27 +15,46 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack{
+            
+                
                 Text("TV Show Guessing Game")
-                    .font(.title)
+                .font(.title)
+                .foregroundStyle(.white)
                 ZStack{
                     Capsule()
-                        .stroke()
+                        .stroke(.white)
                         .frame(width: 200 ,height: 30)
                     TextField("Username", text: $name)
                         .multilineTextAlignment(.center)
+                        .foregroundStyle(.white)
                 }
                 Spacer()
                     .frame(width: 1, height: 15)
                 
                 ZStack{
                     Capsule()
-                        .stroke()
+                        .stroke(.white)
                         .frame(width: 200 ,height: 30)
                     TextField("Password", text: $password)
                         .multilineTextAlignment(.center)
+                        .foregroundStyle(.white)
                 }
-                Spacer()
-                    .frame(width: 1, height: 30)
+            Spacer()
+            .frame(width: 1, height: 30)
+            
+                ZStack{
+                                Capsule()
+                                    .fill(.blue)
+                                    .frame(width: 100 ,height: 30)
+                                NavigationLink("Play"){
+                                    GameView()
+                                }
+                                .foregroundStyle(.white)
+                                .padding(100)
+                                .contentShape(Capsule())
+                            }
+                                Spacer()
+                                .frame(width: 1, height: 15)
                 ZStack{
                     Capsule()
                         .fill(.blue)
@@ -56,6 +75,9 @@ struct ContentView: View {
                         LeaderboardView()
                     }
                     .foregroundStyle(.white)
+                    .padding(50)
+                    .contentShape(Capsule())
+                    
                 }
                 
                 
@@ -63,8 +85,16 @@ struct ContentView: View {
                 
                 
             }
-            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.black)
+            
+            
+            
+           
         }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.black)
     }
 }
 
