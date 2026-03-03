@@ -5,41 +5,58 @@
 //  Created by DIEGO CHAVEZ on 3/2/26.
 //
 
-import Foundation
-import Foundation
-import FirebaseCore
-import FirebaseFirestore
 import FirebaseAuth
+import FirebaseCore
 import FirebaseDatabase
+import FirebaseFirestore
+import Foundation
 
 class User {
+    
     var key = ""
+    
     var ref = Database.database().reference()
+    
     var id = UUID()
+    
     var name: String
-    var points: Int
-    init(dict: [String:Any]) {
-        if let n = dict["name"] as? String{
-                name = n
-        }else{
+    var score: Int
+
+    init(dict: [String: Any]) {
+        if let n = dict["name"] as? String {
+            name = n
+        } else {
             name = ""
         }
-        if let p = dict["points"] as? Int{
-            points = p
-        }else{
-            points = 0
+        if let s = dict["score"] as? Int {
+            score = s
+        } else {
+            score = 0
         }
-        
+
     }
+    
+    init(name: String, score: Int) {
+        self.name = name
+        self.score = score
+    }
+    
     func saveToFirebase() {
-        //create a dictionary
-        let dic = ["name": name, "points": points] as [String: Any]
-        ref.child("users").childByAutoId().setValue(dic)
-        key = ref.child("users").childByAutoId().key ?? "0"
+        let dic: [String: Any] = [
+            "name": name,
+            "score": score,
+        ]
+
+        let newRef = ref.child("users").childByAutoId()
+        newRef.setValue(dic)
+
+        key = newRef.key ?? ""
     }
+    
     func deleteFromFirebase() {
         ref.child("users").child(key).removeValue()
     }
+    
     func updateFirebase(dict: [String: Any]) {
         ref.child("users").child(key).updateChildValues(dict)
     }
