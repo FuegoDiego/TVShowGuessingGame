@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct EndView: View {
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         VStack {
             Text("Game Over")
                 .font(.title)
             Text("Score:")
             
-            NavigationLink(destination: ContentView()) {
-                Text("Play Again")
+            Button("Home"){
+                dismiss()
             }
         }
         
