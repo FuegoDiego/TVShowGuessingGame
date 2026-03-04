@@ -8,10 +8,18 @@
 import SwiftUI
 
 struct EndView: View {
+    @Environment(\.dismiss) var dismiss
     var body: some View {
-        Text("Game Over")
-            .font(.title)
+        VStack {
+            Text("Game Over")
+                .font(.title)
+            Text("Score:")
             
+            Button("Home"){
+                dismiss()
+            }
+        }
+        
     }
 }
 
