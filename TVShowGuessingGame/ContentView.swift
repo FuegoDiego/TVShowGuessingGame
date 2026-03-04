@@ -31,7 +31,7 @@ struct ContentView: View {
                     .foregroundStyle(.white)
 
                 ZStack {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 10)
                         .stroke(.blue)
                         .fill(.white)
                         .frame(width: 200, height: 30)
@@ -44,7 +44,7 @@ struct ContentView: View {
                     login()
                 } label: {
                     ZStack {
-                        Capsule()
+                        RoundedRectangle(cornerRadius: 100)
                             .fill(.blue)
                             .frame(width: 100, height: 30)
                         Text("Log in")
@@ -64,7 +64,7 @@ struct ContentView: View {
                 }
 
                 ZStack {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 100)
                         .fill(.blue)
                         .frame(width: 100, height: 30)
                     NavigationLink("Play") {
@@ -73,7 +73,7 @@ struct ContentView: View {
                     .foregroundStyle(.white)
                 }
                 ZStack {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 100)
                         .fill(.blue)
                         .frame(width: 150, height: 30)
 
