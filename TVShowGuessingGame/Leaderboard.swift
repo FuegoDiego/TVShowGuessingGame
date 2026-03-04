@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct LeaderboardView: View {
-    
+
+    @State var users = [User]()
+
     var body: some View {
+
         NavigationStack {
             VStack {
-                Text("HIGHSCORE")
+                Text("LEADERBOARD")
                     .font(.title)
                     .foregroundStyle(.white)
-                List{
-                    ForEach(1...3, id: \.self){ i in
-                        Text("Placeholder \(i)")
+                List {
+                    ForEach(users, id: \.id) { user in
+                        Text("\(user.name) - \(user.score)")
                             .listRowBackground(Color.black)
                             .foregroundStyle(.white)
                     }

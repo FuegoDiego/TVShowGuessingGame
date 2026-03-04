@@ -78,7 +78,7 @@ struct ContentView: View {
                         .frame(width: 150, height: 30)
 
                     NavigationLink("Leaderboard") {
-                        LeaderboardView()
+                        LeaderboardView(users: users)
                     }
                     .foregroundStyle(.white)
                     .padding(20)
