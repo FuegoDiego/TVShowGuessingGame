@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import FirebaseDatabase
 
 struct LeaderboardView: View {
 
     @State var users = [User]()
+    
+    var ref = Database.database().reference()
 
     var body: some View {
 
@@ -19,7 +22,7 @@ struct LeaderboardView: View {
                     .font(.title)
                     .foregroundStyle(.white)
                 List {
-                    ForEach(users, id: \.id) { user in
+                    ForEach(users, id: \.key) { user in
                         Text("\(user.name) - \(user.score)")
                             .listRowBackground(Color.black)
                             .foregroundStyle(.white)
@@ -29,6 +32,41 @@ struct LeaderboardView: View {
                 .background(Color(Color(red: 0.21, green: 0.22, blue: 0.22)))
             }
             .background(.black)
+        }
+        .onAppear {
+            firebaseStuff()
+        }
+    }
+    
+    func firebaseStuff() {
+
+        ref.child("users").observe(.childAdded) { snapshot, _ in
+
+            guard let dict = snapshot.value as? [String: Any] else { return }
+
+            let u = User(dict: dict)
+            u.key = snapshot.key
+
+            DispatchQueue.main.async {
+                self.users.append(u)
+            }
+        }
+
+        ref.child("users").observe(.childChanged) { snapshot, _ in
+
+            guard let dict = snapshot.value as? [String: Any] else { return }
+
+            let u = User(dict: dict)
+            u.key = snapshot.key
+
+            DispatchQueue.main.async {
+                for i in 0..<users.count {
+                    if users[i].key == snapshot.key {
+                        users[i] = u
+                        break
+                    }
+                }
+            }
         }
     }
 }

@@ -59,7 +59,6 @@ struct ContentView: View {
                 }
                 
                 if currentUser != nil {
-                    
                     Text("Logged in as \(currentUser?.name ?? "")")
                         .font(.title)
                         .foregroundStyle(.white)
