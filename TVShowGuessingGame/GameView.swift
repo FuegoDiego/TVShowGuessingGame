@@ -56,6 +56,7 @@ struct GameView: View {
 
                     Button("Skip") {
                         getTV()
+                        blur = 40
                     }
                     .buttonStyle(.borderedProminent)
 
