@@ -34,22 +34,25 @@ struct ContentView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(.blue)
                         .fill(.white)
-                        .frame(width: 200, height: 30)
+                        .frame(width: 280, height: 50)
                     TextField("Enter username:", text: $name)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.black)
+                        .font(.title)
                 }
 
                 Button {
                     login()
                 } label: {
                     ZStack {
-                        RoundedRectangle(cornerRadius: 100)
+                        RoundedRectangle(cornerRadius: 20)
                             .fill(.blue)
-                            .frame(width: 100, height: 30)
+                            .frame(width: 120, height: 50)
                         Text("Log in")
                             .foregroundStyle(.white)
-                            .padding(20)
+                            .font(.title)
+                            
+                        
                     }
                 }
                 
@@ -63,27 +66,29 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                 }
 
-                ZStack {
-                    RoundedRectangle(cornerRadius: 100)
-                        .fill(.blue)
-                        .frame(width: 100, height: 30)
-                    NavigationLink("Play") {
-                        GameView()
+                NavigationLink(destination: GameView()) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.blue)
+                            .frame(width: 120, height: 50)
+                        Text("Play")
+                            .foregroundStyle(.white)
+                            .font(.title)
                     }
-                    .foregroundStyle(.white)
                 }
-                ZStack {
-                    RoundedRectangle(cornerRadius: 100)
-                        .fill(.blue)
-                        .frame(width: 150, height: 30)
-
-                    NavigationLink("Leaderboard") {
-                        LeaderboardView(users: users)
+               
+                
+                NavigationLink(destination: LeaderboardView()) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.blue)
+                            .frame(width: 200, height: 50)
+                        
+                        Text("Leaderboard")
+                            .foregroundStyle(.white)
+                            .font(.title)
+                        
                     }
-                    .foregroundStyle(.white)
-                    .padding(20)
-                    .contentShape(Capsule())
-
                 }
 
             }
