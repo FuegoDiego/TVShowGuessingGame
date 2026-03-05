@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EndView: View {
     @Environment(\.dismiss) var dismiss
+    @Binding var path: NavigationPath
     var body: some View {
         VStack {
             Text("Game Over")
@@ -24,5 +25,5 @@ struct EndView: View {
 }
 
 #Preview {
-    EndView()
+    EndView(path: .constant(NavigationPath()))
 }

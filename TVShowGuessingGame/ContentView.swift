@@ -14,7 +14,7 @@ struct ContentView: View {
 
     @State var name = ""
     @State var displayName = ""
-
+    @State private var path = NavigationPath()
     @State var users = [User]()
     @State var currentUser: User?
 
@@ -70,7 +70,7 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                 }
 
-                NavigationLink(destination: GameView()) {
+                NavigationLink(destination: GameView(path: path)) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(loggedIn ? .blue : .gray)
@@ -121,12 +121,13 @@ struct ContentView: View {
 
         query.observeSingleEvent(of: .value) { snapshot, _ in
 
+            
             guard let snapshot = snapshot as? DataSnapshot else { return }
-
+            
             if snapshot.exists(),
-               let first = snapshot.children.allObjects.first as? DataSnapshot,
-               let data = first.value as? [String: Any] {
-
+               let first = snapshot.children.allObjects.first as? DataSnapshot,let data = first.value as? [String: Any] {
+                print(type(of: first.value))
+                print(data)
                 let u = User(dict: data)
                 u.key = first.key
 

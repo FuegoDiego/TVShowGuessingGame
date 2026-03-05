@@ -22,6 +22,7 @@ struct GameView: View {
     @State var message = ""
 
     @State private var uiImage: UIImage?
+    @Binding var path: NavigationPath
 
     var body: some View {
         NavigationStack {
@@ -54,9 +55,8 @@ struct GameView: View {
                     }
                     .buttonStyle(.borderedProminent)
 
-                    Button("Skip") {
-                        getTV()
-                        blur = 40
+                    NavigationLink(destination: EndView(path: path)){
+                        Text("Give Up")
                     }
                     .buttonStyle(.borderedProminent)
 
@@ -149,5 +149,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView()
+    GameView(path: .constant(NavigationPath()))
 }
