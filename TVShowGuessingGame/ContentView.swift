@@ -21,6 +21,8 @@ struct ContentView: View {
     var ref = Database.database().reference()
 
     @State var didLoad = false
+    
+    @State var loggedIn = false
 
     var body: some View {
         NavigationStack {
@@ -57,9 +59,11 @@ struct ContentView: View {
                 }
                 
                 if currentUser != nil {
+                    
                     Text("Logged in as \(currentUser?.name ?? "")")
                         .font(.title)
                         .foregroundStyle(.white)
+                    
                 } else {
                     Text("Not logged in")
                         .font(.title)
@@ -69,13 +73,14 @@ struct ContentView: View {
                 NavigationLink(destination: GameView()) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.blue)
+                            .fill(loggedIn ? .blue : .gray)
                             .frame(width: 120, height: 50)
                         Text("Play")
                             .foregroundStyle(.white)
                             .font(.title)
                     }
                 }
+                .disabled(loggedIn == false)
                
                 
                 NavigationLink(destination: LeaderboardView()) {
@@ -128,6 +133,7 @@ struct ContentView: View {
                 DispatchQueue.main.async {
                     self.currentUser = u
                     self.displayName = u.name
+                    self.loggedIn = true
                 }
 
             } else {
