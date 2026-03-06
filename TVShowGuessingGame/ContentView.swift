@@ -14,7 +14,7 @@ struct ContentView: View {
 
     @State var name = ""
     @State var displayName = ""
-    @State private var path = NavigationPath()
+    @State var path = NavigationPath()
     @State var users = [User]()
     @State var currentUser: User?
 
@@ -69,7 +69,7 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                 }
 
-                NavigationLink(destination: GameView(path: path)) {
+                NavigationLink(destination: GameView(path: $path)) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(loggedIn ? .blue : .gray)

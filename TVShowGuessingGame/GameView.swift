@@ -6,7 +6,10 @@
 //
 
 import SwiftUI
-
+enum Destination: Hashable {
+    case detailView
+    case endView
+}
 struct GameView: View {
 
     @State var randomShow = TVShow(
@@ -55,9 +58,10 @@ struct GameView: View {
                     }
                     .buttonStyle(.borderedProminent)
 
-                    NavigationLink(destination: EndView(path: path)){
+                    NavigationLink(destination: EndView(path: $path)){
                         Text("Give Up")
                     }
+                    NavigationLink("Give Up", value: Destination.endView)
                     .buttonStyle(.borderedProminent)
 
                     Text(message)
@@ -69,6 +73,10 @@ struct GameView: View {
                 getTV()
 
             }
+        }
+        .navigationDestination(for: Destination.self) { destination in
+            // Handle further navigation from here if needed
+            EndView(path: $path)
         }
 
     }

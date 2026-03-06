@@ -17,7 +17,7 @@ struct EndView: View {
             Text("Score:")
             
             Button("Home"){
-                dismiss()
+                
             }
         }
         
