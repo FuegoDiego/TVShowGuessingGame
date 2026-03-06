@@ -143,6 +143,7 @@ struct ContentView: View {
                 DispatchQueue.main.async {
                     self.currentUser = u
                     self.displayName = name
+                    self.loggedIn = true
                 }
             }
         }
@@ -159,6 +160,7 @@ struct ContentView: View {
 
                 DispatchQueue.main.async {
                     self.users.append(u)
+                    
                 }
 
             }
