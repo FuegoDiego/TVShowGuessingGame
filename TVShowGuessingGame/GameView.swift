@@ -6,10 +6,7 @@
 //
 
 import SwiftUI
-enum Destination: Hashable {
-    case detailView
-    case endView
-}
+
 struct GameView: View {
 
     @State var randomShow = TVShow(
@@ -48,6 +45,17 @@ struct GameView: View {
                             .frame(height: 300)
                             .blur(radius: CGFloat(blur))
                     }
+                    
+                    AsyncImage(url: URL(string: randomShow.image)) { image in
+                        image
+                            .resizable()   // works here because `image` is an Image
+                            .scaledToFit()
+                            .frame(height: 100)
+                            .blur(radius: CGFloat(blur))
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    
 
                     TextField("Enter TV Show Name", text: $guess)
                         .textFieldStyle(.roundedBorder)
@@ -58,11 +66,7 @@ struct GameView: View {
                     }
                     .buttonStyle(.borderedProminent)
 
-                    NavigationLink(destination: EndView(path: $path)){
-                        Text("Give Up")
-                    }
-                    NavigationLink("Give Up", value: Destination.endView)
-                    .buttonStyle(.borderedProminent)
+                    
 
                     Text(message)
                         .foregroundColor(.red)
@@ -74,10 +78,7 @@ struct GameView: View {
 
             }
         }
-        .navigationDestination(for: Destination.self) { destination in
-            // Handle further navigation from here if needed
-            EndView(path: $path)
-        }
+        
 
     }
 
