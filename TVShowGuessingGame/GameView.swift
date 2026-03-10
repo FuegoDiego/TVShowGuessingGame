@@ -48,9 +48,9 @@ struct GameView: View {
                     
                     AsyncImage(url: URL(string: randomShow.image)) { image in
                         image
-                            .resizable()   // works here because `image` is an Image
+                            .resizable()
                             .scaledToFit()
-                            .frame(height: 100)
+                            .frame(height: 300)
                             .blur(radius: CGFloat(blur))
                     } placeholder: {
                         ProgressView()
