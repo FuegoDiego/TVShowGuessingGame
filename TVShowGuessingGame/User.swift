@@ -20,6 +20,7 @@ class User {
     var id = UUID()
     
     var name: String
+    var password: String
     var score: Int
 
     init(dict: [String: Any]) {
@@ -28,6 +29,12 @@ class User {
         } else {
             name = ""
         }
+        if let p = dict["password"] as? String {
+            password = p
+        } else {
+            password = ""
+        }
+
         if let s = dict["score"] as? Int {
             score = s
         } else {
@@ -36,19 +43,22 @@ class User {
 
     }
     
-    init(name: String, score: Int) {
+    init(name: String, password: String, score: Int) {
         self.name = name
+        self.password = password
         self.score = score
     }
     
     func saveToFirebase() {
-        let dic: [String: Any] = [
+        
+        let dict: [String: Any] = [
             "name": name,
-            "score": score,
+            "password": password,
+            "score": score
         ]
 
         let newRef = ref.child("users").childByAutoId()
-        newRef.setValue(dic)
+        newRef.setValue(dict)
 
         key = newRef.key ?? ""
     }
