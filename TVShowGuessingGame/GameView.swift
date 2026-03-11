@@ -32,7 +32,7 @@ struct GameView: View {
     @State var goToEnd = false
 
     var body: some View {
-
+        NavigationStack {
         VStack {
             let timer = Timer.publish(every: 1, on: .main, in: .common)
                 .autoconnect()
@@ -56,16 +56,16 @@ struct GameView: View {
                 //shows spinning with the given text
                 ProgressView("Loading...")
             } else {
-
+                
                 Text("Year: \(randomShow.year)")
                     .foregroundStyle(.white)
                     .font(.title2)
-
+                
                 //displays the strings in genres with commas to separate
                 Text("Genres: \(randomShow.genres.joined(separator: ", "))")
                     .foregroundStyle(.white)
                     .font(.title2)
-
+                
                 if let image = uiImage {
                     Image(uiImage: image)
                         .resizable()
@@ -73,7 +73,7 @@ struct GameView: View {
                         .frame(height: 300)
                         .blur(radius: CGFloat(blur))
                 }
-
+                
                 AsyncImage(url: URL(string: randomShow.image)) { image in
                     image
                         .resizable()
@@ -83,11 +83,11 @@ struct GameView: View {
                 } placeholder: {
                     ProgressView()
                 }
-
+                
                 TextField("Enter TV Show Name", text: $guess)
                     .textFieldStyle(.roundedBorder)
                     .padding(.horizontal)
-
+                
                 Button {
                     checkGuess()
                 } label: {
@@ -98,25 +98,26 @@ struct GameView: View {
                         Text("Submit")
                             .foregroundStyle(.white)
                             .font(.title)
-
+                        
                     }
                 }
                 
-
+                
                 Text(message)
                     .foregroundColor(.red)
                 
                 Spacer()
             }
-
+            
         }
         .onAppear {
             print("View Loaded")
             getTV()
-
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black)
+    }
         .navigationDestination(isPresented: $goToEnd) {
             EndView(
                 score: points,

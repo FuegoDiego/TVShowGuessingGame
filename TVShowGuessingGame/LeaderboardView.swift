@@ -15,23 +15,24 @@ struct LeaderboardView: View {
     var ref = Database.database().reference()
 
     var body: some View {
-
-        VStack {
-            Text("LEADERBOARD")
-                .font(.title)
-                .foregroundStyle(.white)
-            List {
-                ForEach(users, id: \.key) { user in
-                    Text("\(user.name) - \(user.score)")
-                        .listRowBackground(Color.black)
-                        .foregroundStyle(.white)
+        NavigationStack {
+            VStack {
+                Text("LEADERBOARD")
+                    .font(.title)
+                    .foregroundStyle(.white)
+                List {
+                    ForEach(users, id: \.key) { user in
+                        Text("\(user.name) - \(user.score)")
+                            .listRowBackground(Color.black)
+                            .foregroundStyle(.white)
+                    }
                 }
-            }
-            .scrollContentBackground(.hidden)
-            .background(Color(Color(red: 0.21, green: 0.22, blue: 0.22)))
+                .scrollContentBackground(.hidden)
+                .background(Color(Color(red: 0.21, green: 0.22, blue: 0.22)))
 
+            }
+            .background(.black)
         }
-        .background(.black)
         .onAppear {
             check()
         }
