@@ -30,8 +30,12 @@ struct LeaderboardView: View {
                 }
                 .scrollContentBackground(.hidden)
                 .background(Color(Color(red: 0.21, green: 0.22, blue: 0.22)))
+                
             }
             .background(.black)
+            .onAppear{
+                check()
+            }
         }
         .onAppear {
             firebaseStuff()
@@ -68,6 +72,9 @@ struct LeaderboardView: View {
                 }
             }
         }
+    }
+    func check(){
+        print(users)
     }
 }
 
