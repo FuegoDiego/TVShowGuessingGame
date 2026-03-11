@@ -18,17 +18,18 @@ struct GameView: View {
         id: Int.random(in: 1...10000)
         
     )
-    @State var blur = 40
+    @State var blur = 50
     @State var guess = ""
     @State var message = ""
     @State var points = 100
-    @State var multiplier = 10
+    @State var multiplier = 2
     @State var time = 90
     @State var deduction = 1.0
+    @State var totalPoints = 0
     
     
     @State private var uiImage: UIImage?
-    @Binding var path: NavigationPath
+    //@Binding var path: NavigationPath
     
     var body: some View {
         NavigationStack {
@@ -43,6 +44,9 @@ struct GameView: View {
                     .onReceive(timer){ _ in
                         if time > 0 {
                             time -= 1
+                        }
+                        if time == 80{
+                            multiplier = 1
                         }
                     }
                         //checks if title has been initialized yet
@@ -108,7 +112,16 @@ struct GameView: View {
             if cleanedGuess == cleanedTitle {
                 message = "Correct!"
                 guess = ""
-                blur = 40
+                
+                totalPoints += Int(Double(points)*Double(multiplier)*deduction)
+                print(totalPoints)
+                blur = 50
+                deduction = 1.0
+                multiplier = 2
+                points = 100
+                print(points)
+                print(multiplier)
+                print(deduction)
                 getTV()  // load new show
             } else {
                 message = "Wrong! Blur reduced."
@@ -178,5 +191,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView(path: .constant(NavigationPath()))
+    GameView(/*path: .constant(NavigationPath())*/)
 }

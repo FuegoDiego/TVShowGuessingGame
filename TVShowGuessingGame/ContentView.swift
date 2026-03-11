@@ -69,7 +69,7 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                 }
 
-                NavigationLink(destination: GameView(path: $path)) {
+                NavigationLink(destination: GameView()) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(loggedIn ? .blue : .gray)
