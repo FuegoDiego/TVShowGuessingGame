@@ -14,7 +14,8 @@ struct ContentView: View {
 
     @State var name = ""
     @State var displayName = ""
-    @State var path = NavigationPath()
+    @State var pass = ""
+
     @State var users = [User]()
     @State var currentUser: User?
 
@@ -23,6 +24,9 @@ struct ContentView: View {
     @State var didLoad = false
     
     @State var loggedIn = false
+    
+    @State var showAlert = false
+    @State var alertMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -37,29 +41,61 @@ struct ContentView: View {
                         .stroke(.blue)
                         .fill(.white)
                         .frame(width: 280, height: 50)
-                    TextField("Enter username:", text: $name)
+                    TextField("Username:", text: $name)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.black)
+                        .font(.title)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+                
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.blue)
+                        .fill(.white)
+                        .frame(width: 280, height: 50)
+                    SecureField("Password:", text: $pass)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.black)
                         .font(.title)
                 }
 
-                Button {
-                    login()
-                } label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.blue)
-                            .frame(width: 120, height: 50)
-                        Text("Log in")
-                            .foregroundStyle(.white)
-                            .font(.title)
+                HStack {
+                    Button {
+                        login()
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.blue)
+                                .frame(width: 120, height: 50)
+                            Text("Log in")
+                                .foregroundStyle(.white)
+                                .font(.title)
                             
-                        
+                            
+                        }
+                    }
+                    Button {
+                        createAccount()
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.blue)
+                                .frame(width: 220, height: 50)
+                            Text("Create Account")
+                                .foregroundStyle(.white)
+                                .font(.title)
+                            
+                            
+                        }
                     }
                 }
                 
                 if currentUser != nil {
                     Text("Logged in as \(currentUser?.name ?? "")")
+                        .font(.title)
+                        .foregroundStyle(.white)
+                    Text("Your highscore: \(currentUser?.score ?? 0)")
                         .font(.title)
                         .foregroundStyle(.white)
                     
@@ -69,7 +105,7 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                 }
 
-                NavigationLink(destination: GameView(path: $path)) {
+                NavigationLink(destination: GameView()) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(loggedIn ? .blue : .gray)
@@ -98,6 +134,11 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.black)
+            .alert("Notice", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(alertMessage)
+            }
 
         }
         .onAppear {
@@ -110,9 +151,7 @@ struct ContentView: View {
 
     func login() {
 
-        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            return
-        }
+        guard !name.isEmpty, !pass.isEmpty else { return }
 
         let query = ref.child("users")
             .queryOrdered(byChild: "name")
@@ -120,31 +159,72 @@ struct ContentView: View {
 
         query.observeSingleEvent(of: .value) { snapshot, _ in
 
-            
             guard let snapshot = snapshot as? DataSnapshot else { return }
-            
+
             if snapshot.exists(),
-               let first = snapshot.children.allObjects.first as? DataSnapshot,let data = first.value as? [String: Any] {
-                print(type(of: first.value))
-                print(data)
+               let first = snapshot.children.allObjects.first as? DataSnapshot,
+               let data = first.value as? [String: Any] {
+
                 let u = User(dict: data)
                 u.key = first.key
 
+                if u.password == pass {
+
+                    DispatchQueue.main.async {
+                        self.currentUser = u
+                        self.displayName = u.name
+                        self.loggedIn = true
+                    }
+
+                } else {
+                    DispatchQueue.main.async {
+                        self.alertMessage = "Incorrect password."
+                        self.showAlert = true
+                    }
+                }
+
+            } else {
                 DispatchQueue.main.async {
-                    self.currentUser = u
-                    self.displayName = u.name
-                    self.loggedIn = true
+                    self.alertMessage = "User does not exist."
+                    self.showAlert = true
+                }
+            }
+        }
+    }
+    
+    func createAccount() {
+
+        guard !name.isEmpty, !pass.isEmpty else { return }
+
+        let query = ref.child("users")
+            .queryOrdered(byChild: "name")
+            .queryEqual(toValue: name)
+
+        query.observeSingleEvent(of: .value) { snapshot, _ in
+
+            guard let snapshot = snapshot as? DataSnapshot else { return }
+
+            if snapshot.exists() {
+
+                DispatchQueue.main.async {
+                    self.alertMessage = "That username is already taken."
+                    self.showAlert = true
                 }
 
             } else {
 
-                let u = User(name: name, score: 0)
+                let u = User(name: name, password: pass, score: 0)
                 u.saveToFirebase()
 
                 DispatchQueue.main.async {
                     self.currentUser = u
                     self.displayName = name
                     self.loggedIn = true
+                }
+
+                DispatchQueue.main.async {
+                    self.alertMessage = "Account created successfully!"
+                    self.showAlert = true
                 }
             }
         }
