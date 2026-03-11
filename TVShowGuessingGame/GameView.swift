@@ -32,71 +32,91 @@ struct GameView: View {
     @State var goToEnd = false
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                let timer = Timer.publish(every: 1, on: .main, in: .common)
-                    .autoconnect()
-                let minutes = (time % 3600) / 60
-                let seconds = time % 60
-                Text(String(format: "%02d:%02d", minutes, seconds))
-                    .font(.system(size: 25, weight: .bold, design: .rounded))
-                    .frame(width: 100, height: 50)
-                    .onReceive(timer) { _ in
-                        if time > 0 {
-                            time -= 1
-                        }
+
+        VStack {
+            let timer = Timer.publish(every: 1, on: .main, in: .common)
+                .autoconnect()
+            let minutes = (time % 3600) / 60
+            let seconds = time % 60
+            
+            Text(String(format: "%02d:%02d", minutes, seconds))
+                .foregroundStyle(.white)
+                .font(.system(size: 36, weight: .bold, design: .rounded))
+                .frame(width: 100, height: 50)
+                .onReceive(timer) { _ in
+                    if time > 0 {
+                        time -= 1
                     }
-                //checks if title has been initialized yet
-                if randomShow.title == "" {
-                    //shows spinning with the given text
-                    ProgressView("Loading...")
-                } else {
+                }
+            
+            Spacer()
+            
+            //checks if title has been initialized yet
+            if randomShow.title == "" {
+                //shows spinning with the given text
+                ProgressView("Loading...")
+            } else {
 
-                    Text("Year: \(randomShow.year)")
+                Text("Year: \(randomShow.year)")
+                    .foregroundStyle(.white)
+                    .font(.title2)
 
-                    //displays the strings in genres with commas to separate
-                    Text("Genres: \(randomShow.genres.joined(separator: ", "))")
+                //displays the strings in genres with commas to separate
+                Text("Genres: \(randomShow.genres.joined(separator: ", "))")
+                    .foregroundStyle(.white)
+                    .font(.title2)
 
-                    if let image = uiImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 300)
-                            .blur(radius: CGFloat(blur))
-                    }
-
-                    AsyncImage(url: URL(string: randomShow.image)) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 300)
-                            .blur(radius: CGFloat(blur))
-                    } placeholder: {
-                        ProgressView()
-                    }
-
-                    TextField("Enter TV Show Name", text: $guess)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
-
-                    Button("Submit Guess") {
-                        checkGuess()
-                    }
-                    .buttonStyle(.borderedProminent)
-
-                    Text(message)
-                        .foregroundColor(.red)
+                if let image = uiImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 300)
+                        .blur(radius: CGFloat(blur))
                 }
 
-            }
-            .onAppear {
-                print("View Loaded")
-                getTV()
+                AsyncImage(url: URL(string: randomShow.image)) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 300)
+                        .blur(radius: CGFloat(blur))
+                } placeholder: {
+                    ProgressView()
+                }
 
+                TextField("Enter TV Show Name", text: $guess)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.horizontal)
+
+                Button {
+                    checkGuess()
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.blue)
+                            .frame(width: 120, height: 50)
+                        Text("Submit")
+                            .foregroundStyle(.white)
+                            .font(.title)
+
+                    }
+                }
+                
+
+                Text(message)
+                    .foregroundColor(.red)
+                
+                Spacer()
             }
-            
-            
+
         }
+        .onAppear {
+            print("View Loaded")
+            getTV()
+
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
         .navigationDestination(isPresented: $goToEnd) {
             EndView(
                 score: points,
@@ -104,12 +124,15 @@ struct GameView: View {
                 image: randomShow.image
             )
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
 
     }
 
     func checkGuess() {
 
-        let cleanedGuess = guess
+        let cleanedGuess =
+            guess
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
 
@@ -121,7 +144,7 @@ struct GameView: View {
 
             points += Int(Double(multiplier) * deduction)
 
-            goToEnd = true   
+            goToEnd = true
 
         } else {
 

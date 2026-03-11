@@ -22,9 +22,9 @@ struct ContentView: View {
     var ref = Database.database().reference()
 
     @State var didLoad = false
-    
+
     @State var loggedIn = false
-    
+
     @State var showAlert = false
     @State var alertMessage = ""
 
@@ -48,7 +48,7 @@ struct ContentView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
-                
+
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(.blue)
@@ -71,8 +71,7 @@ struct ContentView: View {
                             Text("Log in")
                                 .foregroundStyle(.white)
                                 .font(.title)
-                            
-                            
+
                         }
                     }
                     Button {
@@ -85,12 +84,11 @@ struct ContentView: View {
                             Text("Create Account")
                                 .foregroundStyle(.white)
                                 .font(.title)
-                            
-                            
+
                         }
                     }
                 }
-                
+
                 if currentUser != nil {
                     Text("Logged in as \(currentUser?.name ?? "")")
                         .font(.title)
@@ -98,7 +96,7 @@ struct ContentView: View {
                     Text("Your highscore: \(currentUser?.score ?? 0)")
                         .font(.title)
                         .foregroundStyle(.white)
-                    
+
                 } else {
                     Text("Not logged in")
                         .font(.title)
@@ -116,18 +114,17 @@ struct ContentView: View {
                     }
                 }
                 .disabled(loggedIn == false)
-               
-                
+
                 NavigationLink(destination: LeaderboardView()) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.blue)
                             .frame(width: 200, height: 50)
-                        
+
                         Text("Leaderboard")
                             .foregroundStyle(.white)
                             .font(.title)
-                        
+
                     }
                 }
 
@@ -135,7 +132,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.black)
             .alert("Notice", isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
+                Button("OK", role: .cancel) {}
             } message: {
                 Text(alertMessage)
             }
@@ -162,8 +159,9 @@ struct ContentView: View {
             guard let snapshot = snapshot as? DataSnapshot else { return }
 
             if snapshot.exists(),
-               let first = snapshot.children.allObjects.first as? DataSnapshot,
-               let data = first.value as? [String: Any] {
+                let first = snapshot.children.allObjects.first as? DataSnapshot,
+                let data = first.value as? [String: Any]
+            {
 
                 let u = User(dict: data)
                 u.key = first.key
@@ -191,7 +189,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     func createAccount() {
 
         guard !name.isEmpty, !pass.isEmpty else { return }
@@ -241,7 +239,7 @@ struct ContentView: View {
 
                 DispatchQueue.main.async {
                     self.users.append(u)
-                    
+
                 }
 
             }
