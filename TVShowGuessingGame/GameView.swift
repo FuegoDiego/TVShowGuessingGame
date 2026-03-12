@@ -18,14 +18,15 @@ struct GameView: View {
         id: Int.random(in: 1...10000)
 
     )
-    @State var blur = 50
+    @State var blur = 40
     @State var guess = ""
     @State var message = ""
-    @State var points = 100
+    @State var points = 0
     @State var multiplier = 2.0
     @State var time = 90
     @State var deduction = 1.0
     @State var totalPoints = 0
+    @State var skip: Bool = false
     
     
     @State private var uiImage: UIImage?
@@ -116,6 +117,20 @@ struct GameView: View {
                     .foregroundColor(.red)
                 
                 Spacer()
+                Button {
+                    skip = true
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.blue)
+                            .frame(width: 120, height: 50)
+                        Text("Skip")
+                            .foregroundStyle(.white)
+                            .font(.title)
+                        
+                    }
+                }
+                
             }
             
         }
@@ -135,6 +150,14 @@ struct GameView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+        .alert("Are you sure", isPresented: $skip){
+            Button("Yes", role: .close){
+                goToEnd = true
+            }
+            Button("No", role: .close){
+                
+            }
+        }
     }
         
 
@@ -152,9 +175,10 @@ struct GameView: View {
         if cleanedGuess == cleanedTitle {
 
             message = "Correct!"
-
-            points += Int(Double(multiplier) * deduction)
-
+            blur = 40
+            points += Int(Double(multiplier) * deduction * Double(100))
+            multiplier = 2.0
+            deduction = 1.0
             goToEnd = true
 
         } else {
