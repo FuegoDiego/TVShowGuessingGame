@@ -22,7 +22,7 @@ struct GameView: View {
     @State var guess = ""
     @State var message = ""
     @State var points = 100
-    @State var multiplier = 10
+    @State var multiplier = 2.0
     @State var time = 90
     @State var deduction = 1.0
 
@@ -38,18 +38,24 @@ struct GameView: View {
                 .autoconnect()
             let minutes = (time % 3600) / 60
             let seconds = time % 60
-            
+            Spacer()
             Text(String(format: "%02d:%02d", minutes, seconds))
                 .foregroundStyle(.white)
-                .font(.system(size: 36, weight: .bold, design: .rounded))
+                .font(.system(size: 30, weight: .bold, design: .rounded))
                 .frame(width: 100, height: 50)
                 .onReceive(timer) { _ in
                     if time > 0 {
                         time -= 1
                     }
+                    if time == 0{
+                        
+                    }
+                    if time == 75{
+                        multiplier = 1.0
+                    }
                 }
             
-            Spacer()
+            
             
             //checks if title has been initialized yet
             if randomShow.title == "" {
@@ -65,6 +71,7 @@ struct GameView: View {
                 Text("Genres: \(randomShow.genres.joined(separator: ", "))")
                     .foregroundStyle(.white)
                     .font(.title2)
+                    .multilineTextAlignment(.center)
                 
                 if let image = uiImage {
                     Image(uiImage: image)
@@ -117,16 +124,17 @@ struct GameView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.black)
-    }
         .navigationDestination(isPresented: $goToEnd) {
             EndView(
-                score: points,
-                title: randomShow.title,
-                image: randomShow.image
+                score: $points,
+                title: $randomShow.title,
+                image: $randomShow.image
             )
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+    }
+        
 
     }
 
@@ -150,7 +158,7 @@ struct GameView: View {
         } else {
 
             message = "Wrong! Blur reduced."
-            blur = max(blur - 5, 0)
+            blur = max(blur - 2, 0)
             deduction = max(deduction - 0.1, 0.0)
         }
     }
@@ -173,7 +181,8 @@ struct GameView: View {
 
                     let randomJSON = jsonArray.randomElement()
                 {
-
+                    print(randomJSON)
+                    print("ahhh~")
                     let title = randomJSON["name"] as? String ?? ""
 
                     var year = ""
@@ -190,6 +199,7 @@ struct GameView: View {
                         print(imageDict)
                         imageURL = imageDict["original"] as? String ?? ""
                     }
+                    
 
                     DispatchQueue.main.async {
                         self.randomShow = TVShow(

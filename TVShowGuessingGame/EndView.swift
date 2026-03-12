@@ -9,9 +9,9 @@ import SwiftUI
 
 struct EndView: View {
 
-    var score: Int
-    var title: String
-    var image: String
+    @Binding var score: Int
+    @Binding var title: String
+    @Binding var image: String
 
     var body: some View {
         NavigationStack {
@@ -89,6 +89,6 @@ struct EndView: View {
     }
 }
 
-/*#Preview {
-    EndView()
-}*/
+#Preview {
+    EndView(score: .constant(0), title: .constant(""), image: .constant(""))
+}
