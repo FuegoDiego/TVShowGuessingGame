@@ -28,6 +28,7 @@ struct GameView: View {
     @State var deduction = 1.0
     @State var totalPoints = 0
     @State var skip: Bool = false
+    @State var summary = ""
     
     
     @State private var uiImage: UIImage?
@@ -79,6 +80,10 @@ struct GameView: View {
                     .foregroundStyle(.white)
                     .font(.title2)
                     .multilineTextAlignment(.center)
+                Text("Synopsis: \(summary)")
+                    .foregroundStyle(.white)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
                 
                 AsyncImage(url: URL(string: randomShow.image)) { image in
                     image
@@ -120,7 +125,7 @@ struct GameView: View {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.blue)
                             .frame(width: 120, height: 50)
-                        Text("Skip")
+                        Text("Give Up")
                             .foregroundStyle(.white)
                             .font(.title)
                         
@@ -158,7 +163,13 @@ struct GameView: View {
         
 
     }
-    
+    func snip(){
+        summary = summary.replacingOccurrences(of: "<p>", with: "")
+        summary = summary.replacingOccurrences(of: "</p>", with: "")
+        summary = summary.replacingOccurrences(of: "<b>", with: "")
+        summary = summary.replacingOccurrences(of: "</b>", with: "")
+        
+    }
     func updateHighScore() {
 
         guard let user = user else { return }
@@ -200,6 +211,10 @@ struct GameView: View {
             message = "Wrong! Blur reduced."
             blur = max(blur - 2, 0)
             deduction = max(deduction - 0.1, 0.0)
+            if blur <= 20{
+                blur = 0
+                deduction = 0.0
+            }
         }
     }
 
@@ -231,7 +246,10 @@ struct GameView: View {
                     {
                         year = String(yearString)
                     }
-
+                    if let sum = randomJSON["summary"] as? String {
+                        summary = sum
+                        snip()
+                    }
                     let genres = randomJSON["genres"] as? [String] ?? []
 
                     var imageURL = ""
