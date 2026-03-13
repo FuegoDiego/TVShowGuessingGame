@@ -7,6 +7,7 @@
 
 internal import Combine
 import SwiftUI
+import FirebaseDatabaseInternal
 
 struct GameView: View {
 
@@ -31,6 +32,8 @@ struct GameView: View {
     //@Binding var path: NavigationPath
 
     @State var goToEnd = false
+    
+    var user : User?
 
     var body: some View {
         NavigationStack {
@@ -48,10 +51,11 @@ struct GameView: View {
                     if time > 0 {
                         time -= 1
                     }
-                    if time == 0{
-                        
+                    if time == 0 {
+                        updateHighScore()
+                        goToEnd = true
                     }
-                    if time == 75{
+                    if time == 75 {
                         multiplier = 1.0
                     }
                 }
@@ -73,14 +77,6 @@ struct GameView: View {
                     .foregroundStyle(.white)
                     .font(.title2)
                     .multilineTextAlignment(.center)
-                
-                if let image = uiImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 300)
-                        .blur(radius: CGFloat(blur))
-                }
                 
                 AsyncImage(url: URL(string: randomShow.image)) { image in
                     image
@@ -138,6 +134,23 @@ struct GameView: View {
         
 
     }
+    
+    func updateHighScore() {
+
+        guard let user = user else { return }
+
+        let ref = Database.database().reference()
+
+        if points > user.score {
+
+            ref.child("users")
+                .child(user.key)
+                .child("score")
+                .setValue(points)
+
+            print("New high score saved!")
+        }
+    }
 
     func checkGuess() {
 
@@ -153,7 +166,9 @@ struct GameView: View {
             message = "Correct!"
 
             points += Int(Double(multiplier) * deduction)
-            user.updateFirebase(dict: ["score": points])
+            
+            updateHighScore()
+
             goToEnd = true
 
         } else {
