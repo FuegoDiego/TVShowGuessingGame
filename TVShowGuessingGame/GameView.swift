@@ -25,6 +25,7 @@ struct GameView: View {
     @State var multiplier = 2.0
     @State var time = 90
     @State var deduction = 1.0
+    @Binding var user: User
 
     @State private var uiImage: UIImage?
     //@Binding var path: NavigationPath
@@ -152,7 +153,7 @@ struct GameView: View {
             message = "Correct!"
 
             points += Int(Double(multiplier) * deduction)
-
+            user.updateFirebase(dict: ["score": points])
             goToEnd = true
 
         } else {
@@ -225,5 +226,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView()
+    GameView(user: .constant(User(dict: ["":""])))
 }

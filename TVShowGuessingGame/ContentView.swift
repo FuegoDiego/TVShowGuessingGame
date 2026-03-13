@@ -102,18 +102,22 @@ struct ContentView: View {
                         .font(.title)
                         .foregroundStyle(.white)
                 }
-
-                NavigationLink(destination: GameView()) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(loggedIn ? .blue : .gray)
-                            .frame(width: 120, height: 50)
-                        Text("Play")
-                            .foregroundStyle(.white)
-                            .font(.title)
+                if currentUser != nil {
+                    NavigationLink(destination: GameView(user: Binding(
+                        get: { currentUser! },
+                        set: { currentUser = $0 }
+                    ))) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(loggedIn ? .blue : .gray)
+                                .frame(width: 120, height: 50)
+                            Text("Play")
+                                .foregroundStyle(.white)
+                                .font(.title)
+                        }
                     }
+                    .disabled(loggedIn == false)
                 }
-                .disabled(loggedIn == false)
 
                 NavigationLink(destination: LeaderboardView()) {
                     ZStack {
