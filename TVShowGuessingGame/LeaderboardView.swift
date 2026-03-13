@@ -21,8 +21,8 @@ struct LeaderboardView: View {
                     .font(.title)
                     .foregroundStyle(.white)
                 List {
-                    ForEach(users, id: \.key) { user in
-                        Text("\(user.name) - \(user.score)")
+                    ForEach(Array(users.enumerated()), id: \.element.key) { index, user in
+                        Text("\(index + 1)) \(user.name) - \(user.score)")
                             .listRowBackground(Color.black)
                             .foregroundStyle(.white)
                     }
@@ -44,7 +44,9 @@ struct LeaderboardView: View {
 
     func firebaseStuff() {
 
-        ref.child("users").observe(.childAdded) { snapshot, _ in
+        ref.child("users")
+           .queryOrdered(byChild: "score")
+           .observe(.childAdded) { snapshot, _ in
 
             guard let dict = snapshot.value as? [String: Any] else { return }
 
@@ -52,7 +54,7 @@ struct LeaderboardView: View {
             u.key = snapshot.key
 
             DispatchQueue.main.async {
-                self.users.append(u)
+                self.users.insert(u, at: 0)
             }
         }
 
