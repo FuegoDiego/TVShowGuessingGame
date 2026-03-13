@@ -147,10 +147,10 @@ struct GameView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .alert("Are you sure", isPresented: $skip){
-            Button("Yes", role: .close){
+            Button("Yes"){
                 goToEnd = true
             }
-            Button("No", role: .close){
+            Button("No", role: .destructive){
                 
             }
         }
@@ -190,6 +190,7 @@ struct GameView: View {
             message = "Correct!"
             blur = 40
             points += Int(Double(multiplier) * deduction * Double(100))
+            updateHighScore()
             multiplier = 2.0
             deduction = 1.0
             goToEnd = true
@@ -264,5 +265,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView(user: .constant(User(dict: ["":""])))
+    GameView()
 }
