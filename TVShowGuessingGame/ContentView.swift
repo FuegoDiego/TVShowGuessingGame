@@ -48,6 +48,7 @@ struct ContentView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
+                .padding(.vertical, 20)
 
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
@@ -74,6 +75,7 @@ struct ContentView: View {
 
                         }
                     }
+                    .padding(.vertical,20)
                     Button {
                         createAccount()
                     } label: {
@@ -103,17 +105,19 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                 }
 
-                NavigationLink(destination: GameView()) {
+                NavigationLink(destination: GameView(user: currentUser)) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(loggedIn ? .blue : .gray)
-                            .frame(width: 120, height: 50)
+                            .fill(loggedIn ? .green : .gray)
+                            .frame(width: 200, height: 100)
                         Text("Play")
                             .foregroundStyle(.white)
                             .font(.title)
                     }
+                    .disabled(loggedIn == false)
                 }
                 .disabled(loggedIn == false)
+                .padding(.vertical, 20)
 
                 NavigationLink(destination: LeaderboardView()) {
                     ZStack {
@@ -128,6 +132,26 @@ struct ContentView: View {
                     }
                 }
 
+            
+                
+                Button {
+                    UserDefaults.standard.removeObject(forKey: "loggedInUser")
+
+                    currentUser = nil
+                    loggedIn = false
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.red)
+                            .frame(width: 120, height: 50)
+                        Text("Log out")
+                            .foregroundStyle(.white)
+                            .font(.title)
+
+                    }
+                }
+                .padding(.top, 50)
+
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.black)
@@ -141,6 +165,7 @@ struct ContentView: View {
         .onAppear {
             if !didLoad {
                 firebaseStuff()
+                autoLogin()
                 didLoad = true
             }
         }
@@ -172,6 +197,8 @@ struct ContentView: View {
                         self.currentUser = u
                         self.displayName = u.name
                         self.loggedIn = true
+
+                        UserDefaults.standard.set(name, forKey: "loggedInUser")
                     }
 
                 } else {
@@ -218,11 +245,45 @@ struct ContentView: View {
                     self.currentUser = u
                     self.displayName = name
                     self.loggedIn = true
+
+                    UserDefaults.standard.set(self.name, forKey: "loggedInUser")
                 }
 
                 DispatchQueue.main.async {
                     self.alertMessage = "Account created successfully!"
                     self.showAlert = true
+                }
+            }
+        }
+    }
+
+    func autoLogin() {
+
+        if let savedName = UserDefaults.standard.string(forKey: "loggedInUser")
+        {
+
+            let query = ref.child("users")
+                .queryOrdered(byChild: "name")
+                .queryEqual(toValue: savedName)
+
+            query.observeSingleEvent(of: .value) { snapshot, _ in
+
+                guard let snapshot = snapshot as? DataSnapshot else { return }
+
+                if snapshot.exists(),
+                    let first = snapshot.children.allObjects.first
+                        as? DataSnapshot,
+                    let data = first.value as? [String: Any]
+                {
+
+                    let u = User(dict: data)
+                    u.key = first.key
+
+                    DispatchQueue.main.async {
+                        self.currentUser = u
+                        self.displayName = u.name
+                        self.loggedIn = true
+                    }
                 }
             }
         }
