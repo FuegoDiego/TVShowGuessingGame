@@ -9,20 +9,24 @@ import FirebaseAuth
 import FirebaseCore
 import FirebaseDatabase
 import FirebaseFirestore
+import SwiftUI
 import Foundation
+internal import Combine
 
-class User {
+class User: ObservableObject {
+    
+    
     
     var key = ""
     
-    var ref = Database.database().reference()
+    
     
     var id = UUID()
-    
+    var score: Int
     var name: String
     var password: String
-    var score: Int
-
+    
+    private var ref = Database.database().reference()
     init(dict: [String: Any]) {
         if let n = dict["name"] as? String {
             name = n

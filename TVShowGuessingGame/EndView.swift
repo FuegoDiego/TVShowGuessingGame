@@ -12,6 +12,7 @@ struct EndView: View {
     @Binding var score: Int
     @Binding var title: String
     @Binding var image: String
+    @Binding var user: User
 
     var body: some View {
         NavigationStack {
@@ -54,7 +55,7 @@ struct EndView: View {
                     }
                 }
                 
-                NavigationLink(destination: GameView()) {
+                NavigationLink(destination: GameView(user: user)) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.blue)
@@ -90,5 +91,5 @@ struct EndView: View {
 }
 
 #Preview {
-    EndView(score: .constant(0), title: .constant(""), image: .constant(""))
+    EndView(score: .constant(0), title: .constant(""), image: .constant(""), user: .constant(User(dict: ["":""])))
 }
