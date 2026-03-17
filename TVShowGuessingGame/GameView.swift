@@ -28,135 +28,190 @@ struct GameView: View {
     @State var deduction = 1.0
     @State var totalPoints = 0
     @State var skip: Bool = false
-    
+    @State var summary = ""
+    @State var titles: [String] = []
+    @State var network = ""
+    @State var ended = ""
+    @State var airDate = ""
     
     @State private var uiImage: UIImage?
     //@Binding var path: NavigationPath
 
     @State var goToEnd = false
     
-    var user : User?
+    var user: User
 
+    var filteredShows: [String] {
+        titles.filter { $0.localizedCaseInsensitiveContains(guess) }
+    }
+    
     var body: some View {
-        NavigationStack {
-        VStack {
-            let timer = Timer.publish(every: 1, on: .main, in: .common)
-                .autoconnect()
-            let minutes = (time % 3600) / 60
-            let seconds = time % 60
-            Spacer()
-            Text(String(format: "%02d:%02d", minutes, seconds))
-                .foregroundStyle(.white)
-                .font(.system(size: 30, weight: .bold, design: .rounded))
-                .frame(width: 100, height: 50)
-                .onReceive(timer) { _ in
-                    if time > 0 {
-                        time -= 1
+        ScrollView{
+            NavigationStack {
+                VStack {
+                    let timer = Timer.publish(every: 1, on: .main, in: .common)
+                        .autoconnect()
+                    let minutes = (time % 3600) / 60
+                    let seconds = time % 60
+                    Spacer()
+                    Text(String(format: "%02d:%02d", minutes, seconds))
+                        .foregroundStyle(.white)
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+                        .frame(width: 100, height: 50)
+                        .onReceive(timer) { _ in
+                            if time > 0 {
+                                time -= 1
+                            }
+                            if time == 0 {
+                                updateHighScore()
+                                goToEnd = true
+                            }
+                            if time == 75 {
+                                multiplier = 1.0
+                            }
+                        }
+                    
+                    
+                    
+                    //checks if title has been initialized yet
+                    if randomShow.title == "" {
+                        //shows spinning with the given text
+                        ProgressView("Loading...")
+                    } else {
+                        
+                        Text("Year: \(randomShow.year)")
+                            .foregroundStyle(.white)
+                            .font(.title2)
+                        
+                        //displays the strings in genres with commas to separate
+                        Text("Genres: \(randomShow.genres.joined(separator: ", "))")
+                            .foregroundStyle(.white)
+                            .font(.title2)
+                            .multilineTextAlignment(.center)
+                        Text("Synopsis: \(summary)")
+                            .foregroundStyle(.white)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
+                        
+                        Text("Network Name: \(network)")
+                            .foregroundStyle(.white)
+                            .font(.title2)
+                            .multilineTextAlignment(.center)
+                        
+                        AsyncImage(url: URL(string: randomShow.image)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 300)
+                                .blur(radius: CGFloat(blur))
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        
+                        TextField("Enter TV Show Name", text: $guess)
+                            .textFieldStyle(.roundedBorder)
+                            .padding(.horizontal)
+                        if !filteredShows.isEmpty && guess != "" {
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(filteredShows, id: \.self) { show in
+                                    Text(show)
+                                        .padding()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemGray6))
+                                        .onTapGesture {
+                                            guess = show
+                                        }
+                                    Divider()
+                                }
+                            }
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                            .shadow(radius: 2)
+                        }
+                        
+                        Button {
+                            checkGuess()
+                        } label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(.blue)
+                                    .frame(width: 120, height: 50)
+                                Text("Submit")
+                                    .foregroundStyle(.white)
+                                    .font(.title)
+                                
+                            }
+                        }
+                        
+                        
+                        
+                        Text(message)
+                            .foregroundColor(.red)
+                        
+                        Spacer()
+                        Button {
+                            skip = true
+                        } label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(.blue)
+                                    .frame(width: 120, height: 50)
+                                Text("Give Up")
+                                    .foregroundStyle(.white)
+                                    .font(.title)
+                                
+                            }
+                        }
+                        
                     }
-                    if time == 0 {
-                        updateHighScore()
+                    
+                }
+                .onAppear {
+                    print("View Loaded")
+                    getTV()
+                    
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black)
+                .navigationDestination(isPresented: $goToEnd) {
+                    EndView(
+                        score: $points,
+                        title: $randomShow.title,
+                        image: $randomShow.image,
+                        user: .constant(user)
+                    )
+                }
+                .navigationBarBackButtonHidden(true)
+                .toolbar(.hidden, for: .navigationBar)
+                .alert("Are you sure", isPresented: $skip){
+                    Button("Yes"){
                         goToEnd = true
                     }
-                    if time == 75 {
-                        multiplier = 1.0
-                    }
-                }
-            
-            
-            
-            //checks if title has been initialized yet
-            if randomShow.title == "" {
-                //shows spinning with the given text
-                ProgressView("Loading...")
-            } else {
-                
-                Text("Year: \(randomShow.year)")
-                    .foregroundStyle(.white)
-                    .font(.title2)
-                
-                //displays the strings in genres with commas to separate
-                Text("Genres: \(randomShow.genres.joined(separator: ", "))")
-                    .foregroundStyle(.white)
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-                
-                AsyncImage(url: URL(string: randomShow.image)) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 300)
-                        .blur(radius: CGFloat(blur))
-                } placeholder: {
-                    ProgressView()
-                }
-                
-                TextField("Enter TV Show Name", text: $guess)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
-                
-                Button {
-                    checkGuess()
-                } label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.blue)
-                            .frame(width: 120, height: 50)
-                        Text("Submit")
-                            .foregroundStyle(.white)
-                            .font(.title)
+                    Button("no", role: .cancel){
                         
                     }
                 }
-                
-                
-                Text(message)
-                    .foregroundColor(.red)
-                
-                Spacer()
-                Button {
-                    skip = true
-                } label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.blue)
-                            .frame(width: 120, height: 50)
-                        Text("Skip")
-                            .foregroundStyle(.white)
-                            .font(.title)
-                        
-                    }
-                }
-                
-            }
-            
-        }
-        .onAppear {
-            print("View Loaded")
-            getTV()
-            
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
-        .navigationDestination(isPresented: $goToEnd) {
-            EndView(
-                score: $points,
-                title: $randomShow.title,
-                image: $randomShow.image
-            )
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .navigationBar)
-        .alert("Are you sure", isPresented: $skip){
-            Button("Yes"){
-                goToEnd = true
-            }
-            Button("No", role: .destructive){
-                
             }
         }
-    }
-        
 
+    }
+    func snip(title: String){
+        /*summary = summary.replacingOccurrences(of: "<p>", with: "")
+        summary = summary.replacingOccurrences(of: "</p>", with: "")
+        summary = summary.replacingOccurrences(of: "<b>", with: "")
+        summary = summary.replacingOccurrences(of: "</b>", with: "")
+        summary = summary.replacingOccurrences(of: title, with: "TV SHOW NAME", options: .regularExpression)*/
+        summary = summary.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+
+            let escapedTitle = NSRegularExpression.escapedPattern(for: title)
+            let pattern = "\\b\(escapedTitle)\\b"
+
+            summary = summary.replacingOccurrences(
+                of: pattern,
+                with: "TV SHOW NAME",
+                options: .regularExpression
+            )
     }
     
     func updateHighScore() {
@@ -203,6 +258,8 @@ struct GameView: View {
             message = "Correct!"
             blur = 40
             points += Int(Double(multiplier) * deduction * Double(100))
+            
+            print("Coqueta")
             updateHighScore()
             multiplier = 2.0
             deduction = 1.0
@@ -213,9 +270,30 @@ struct GameView: View {
             message = "Wrong! Blur reduced."
             blur = max(blur - 2, 0)
             deduction = max(deduction - 0.1, 0.0)
+            if blur <= 5{
+                blur = 0
+                deduction = 0.0
+            }
         }
     }
+    func updateHighScore() {
 
+        
+
+        let ref = Database.database().reference()
+
+        if points > user.score {
+            user.score = points
+            ref.child("users")
+                .child(user.key)
+                .child("score")
+                .setValue(points)
+
+            print("New high score saved!")
+            print("Otra más de las cumbias originalesSus compas de Fuerza Regida y Grupo FronteraVuélvale a marcar, compa CarlosPensando y viendo las estrellas, preguntéSi en algún lugar esto se estaría repitiendoSi es que en otro mundo tal vez nos ganó el deseoO si solo fuimos un error del universo")
+            print("\(user.score)")
+        }
+    }
     func getTV() {
 
         print("Loading local JSON")
@@ -226,57 +304,82 @@ struct GameView: View {
         ),
             let data = try? Data(contentsOf: url)
         {
-
+        
+            
             do {
-
-                if let jsonArray = try JSONSerialization.jsonObject(with: data)
-                    as? [[String: Any]],
-
-                    let randomJSON = jsonArray.randomElement()
-                {
-                    print(randomJSON)
-                    print("ahhh~")
-                    let title = randomJSON["name"] as? String ?? ""
-
-                    var year = ""
-                    if let premiered = randomJSON["premiered"] as? String,
-                        let yearString = premiered.split(separator: "-").first
-                    {
-                        year = String(yearString)
+                
+                if let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                    
+                    var loadedTitles: [String] = []
+                    
+                    // Fill titles for autocomplete
+                    for show in jsonArray {
+                        if let title = show["name"] as? String {
+                            loadedTitles.append(title)
+                        }
                     }
-
-                    let genres = randomJSON["genres"] as? [String] ?? []
-
-                    var imageURL = ""
-                    if let imageDict = randomJSON["image"] as? [String: Any] {
-                        print(imageDict)
-                        imageURL = imageDict["original"] as? String ?? ""
+                    DispatchQueue.main.async {
+                        self.titles = loadedTitles
                     }
                     
-
-                    DispatchQueue.main.async {
-                        self.randomShow = TVShow(
-                            title: title,
-                            year: year,
-                            genres: genres,
-                            image: imageURL,
-                            id: self.randomShow.id
-                        )
-
-                        self.uiImage = UIImage(named: imageURL)
-
-                        print("Loaded local show:", title)
+                    if let randomJSON = jsonArray.randomElement(){
+                        print(randomJSON)
+                        print("ahhh~")
+                        let title = randomJSON["name"] as? String ?? ""
+                        
+                        var year = ""
+                        if let premiered = randomJSON["premiered"] as? String,
+                           let yearString = premiered.split(separator: "-").first
+                        {
+                            year = String(yearString)
+                        }
+                        if let sum = randomJSON["summary"] as? String {
+                            summary = sum
+                            snip(title: title)
+                        }
+                        let genres = randomJSON["genres"] as? [String] ?? []
+                        
+                        var imageURL = ""
+                        if let imageDict = randomJSON["image"] as? [String: Any] {
+                            print(imageDict)
+                            imageURL = imageDict["original"] as? String ?? ""
+                        }
+                        
+                        
+                        DispatchQueue.main.async {
+                            self.randomShow = TVShow(
+                                title: title,
+                                year: year,
+                                genres: genres,
+                                image: imageURL,
+                                id: self.randomShow.id
+                            )
+                            
+                            self.uiImage = UIImage(named: imageURL)
+                            
+                            print("Loaded local show:", title)
+                        }
+                        if let networkDict = randomJSON["network"] as? [String: Any],
+                           let net = networkDict["name"] as? String {
+                            network = net
+                        }
+                        if let end = randomJSON["ended"] as? String{
+                            ended = end
+                        }
+                        if let air = randomJSON["schedule"] as? String{
+                            airDate = air
+                        }
                     }
                 }
-
-            } catch {
-                print("JSON parse error:", error)
+                } catch {
+                    print("JSON parse error:", error)
+                }
             }
-        }
+        
     }
 
 }
 
 #Preview {
-    GameView()
+    GameView(user: User(name: "Player 1", password: "1", score: 0))
 }
