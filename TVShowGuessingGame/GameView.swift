@@ -29,7 +29,10 @@ struct GameView: View {
     @State var totalPoints = 0
     @State var skip: Bool = false
     @State var summary = ""
-    
+    @State var titles: [String] = []
+    @State var network = ""
+    @State var ended = ""
+    @State var airDate = ""
     
     @State private var uiImage: UIImage?
     //@Binding var path: NavigationPath
@@ -38,6 +41,10 @@ struct GameView: View {
     
     var user: User
 
+    var filteredShows: [String] {
+        titles.filter { $0.localizedCaseInsensitiveContains(guess) }
+    }
+    
     var body: some View {
         ScrollView{
             NavigationStack {
@@ -87,6 +94,11 @@ struct GameView: View {
                             .multilineTextAlignment(.center)
                             .lineLimit(nil)
                         
+                        Text("Network Name: \(network)")
+                            .foregroundStyle(.white)
+                            .font(.title2)
+                            .multilineTextAlignment(.center)
+                        
                         AsyncImage(url: URL(string: randomShow.image)) { image in
                             image
                                 .resizable()
@@ -100,6 +112,23 @@ struct GameView: View {
                         TextField("Enter TV Show Name", text: $guess)
                             .textFieldStyle(.roundedBorder)
                             .padding(.horizontal)
+                        if !filteredShows.isEmpty && guess != "" {
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(filteredShows, id: \.self) { show in
+                                    Text(show)
+                                        .padding()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemGray6))
+                                        .onTapGesture {
+                                            guess = show
+                                        }
+                                    Divider()
+                                }
+                            }
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                            .shadow(radius: 2)
+                        }
                         
                         Button {
                             checkGuess()
@@ -246,56 +275,78 @@ struct GameView: View {
         ),
             let data = try? Data(contentsOf: url)
         {
-
+        
+            
             do {
-
-                if let jsonArray = try JSONSerialization.jsonObject(with: data)
-                    as? [[String: Any]],
-
-                    let randomJSON = jsonArray.randomElement()
-                {
-                    print(randomJSON)
-                    print("ahhh~")
-                    let title = randomJSON["name"] as? String ?? ""
-
-                    var year = ""
-                    if let premiered = randomJSON["premiered"] as? String,
-                        let yearString = premiered.split(separator: "-").first
-                    {
-                        year = String(yearString)
+                
+                if let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                    
+                    var loadedTitles: [String] = []
+                    
+                    // Fill titles for autocomplete
+                    for show in jsonArray {
+                        if let title = show["name"] as? String {
+                            loadedTitles.append(title)
+                        }
                     }
-                    if let sum = randomJSON["summary"] as? String {
-                        summary = sum
-                        snip(title: title)
-                    }
-                    let genres = randomJSON["genres"] as? [String] ?? []
-
-                    var imageURL = ""
-                    if let imageDict = randomJSON["image"] as? [String: Any] {
-                        print(imageDict)
-                        imageURL = imageDict["original"] as? String ?? ""
+                    DispatchQueue.main.async {
+                        self.titles = loadedTitles
                     }
                     
-
-                    DispatchQueue.main.async {
-                        self.randomShow = TVShow(
-                            title: title,
-                            year: year,
-                            genres: genres,
-                            image: imageURL,
-                            id: self.randomShow.id
-                        )
-
-                        self.uiImage = UIImage(named: imageURL)
-
-                        print("Loaded local show:", title)
+                    if let randomJSON = jsonArray.randomElement(){
+                        print(randomJSON)
+                        print("ahhh~")
+                        let title = randomJSON["name"] as? String ?? ""
+                        
+                        var year = ""
+                        if let premiered = randomJSON["premiered"] as? String,
+                           let yearString = premiered.split(separator: "-").first
+                        {
+                            year = String(yearString)
+                        }
+                        if let sum = randomJSON["summary"] as? String {
+                            summary = sum
+                            snip(title: title)
+                        }
+                        let genres = randomJSON["genres"] as? [String] ?? []
+                        
+                        var imageURL = ""
+                        if let imageDict = randomJSON["image"] as? [String: Any] {
+                            print(imageDict)
+                            imageURL = imageDict["original"] as? String ?? ""
+                        }
+                        
+                        
+                        DispatchQueue.main.async {
+                            self.randomShow = TVShow(
+                                title: title,
+                                year: year,
+                                genres: genres,
+                                image: imageURL,
+                                id: self.randomShow.id
+                            )
+                            
+                            self.uiImage = UIImage(named: imageURL)
+                            
+                            print("Loaded local show:", title)
+                        }
+                        if let networkDict = randomJSON["network"] as? [String: Any],
+                           let net = networkDict["name"] as? String {
+                            network = net
+                        }
+                        if let end = randomJSON["ended"] as? String{
+                            ended = end
+                        }
+                        if let air = randomJSON["schedule"] as? String{
+                            airDate = air
+                        }
                     }
                 }
-
-            } catch {
-                print("JSON parse error:", error)
+                } catch {
+                    print("JSON parse error:", error)
+                }
             }
-        }
+        
     }
 
 }
