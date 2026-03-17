@@ -115,14 +115,18 @@ struct GameView: View {
                         if !filteredShows.isEmpty && guess != "" {
                             VStack(alignment: .leading, spacing: 0) {
                                 ForEach(filteredShows, id: \.self) { show in
-                                    Text(show)
+                                    
+                                        Text(show)
                                         .padding()
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .background(Color(.systemGray6))
                                         .onTapGesture {
                                             guess = show
                                         }
-                                    Divider()
+                                        Divider()
+
+                                    
+                                    
                                 }
                             }
                             .cornerRadius(8)
@@ -188,7 +192,7 @@ struct GameView: View {
                     Button("Yes"){
                         goToEnd = true
                     }
-                    Button("no", role: .cancel){
+                    Button("No", role: .cancel){
                         
                     }
                 }
@@ -214,12 +218,12 @@ struct GameView: View {
             )
     }
     
-    func updateHighScore() {
+    func updateHighScore1() {
 
-        guard let user = user else {
+        /*guard let user = user else {
             print("No user passed to GameView")
             return
-        }
+        }*/
 
         print("User key:", user.key)
         print("Points:", points)
@@ -268,7 +272,7 @@ struct GameView: View {
         } else {
 
             message = "Wrong! Blur reduced."
-            blur = max(blur - 2, 0)
+            blur = max(blur - 3, 0)
             deduction = max(deduction - 0.1, 0.0)
             if blur <= 5{
                 blur = 0
@@ -277,8 +281,6 @@ struct GameView: View {
         }
     }
     func updateHighScore() {
-
-        
 
         let ref = Database.database().reference()
 
