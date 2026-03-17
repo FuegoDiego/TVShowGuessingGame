@@ -161,18 +161,31 @@ struct GameView: View {
     
     func updateHighScore() {
 
-        guard let user = user else { return }
+        guard let user = user else {
+            print("No user passed to GameView")
+            return
+        }
+
+        print("User key:", user.key)
+        print("Points:", points)
 
         let ref = Database.database().reference()
 
-        if points > user.score {
+        let scoreRef = ref.child("users").child(user.key).child("score")
 
-            ref.child("users")
-                .child(user.key)
-                .child("score")
-                .setValue(points)
+        scoreRef.observeSingleEvent(of: .value) { snapshot in
 
-            print("New high score saved!")
+            let currentScore = snapshot.value as? Int ?? 0
+            print("Current Firebase score:", currentScore)
+
+            if self.points > currentScore {
+
+                scoreRef.setValue(self.points)
+                print("New high score saved!")
+
+            } else {
+                print("Score not higher")
+            }
         }
     }
 
